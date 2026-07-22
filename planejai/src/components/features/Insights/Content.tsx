@@ -7,12 +7,12 @@ interface ContentProps {
 }
 
 function Paragraph({ children }: PropsWithChildren) {
-  return <p className="text-muted-foreground text-sm leading-relaxed">{children}</p>;
+  return <p className="text-muted-foreground text-base leading-relaxed">{children}</p>;
 }
 
 function SectionTitle({ children }: PropsWithChildren) {
   return (
-    <h3 className="text-foreground mb-1.5 mt-5 text-sm font-semibold leading-relaxed">
+    <h3 className="text-foreground mb-1.5 mt-5 text-lg font-semibold leading-relaxed">
       {children}
     </h3>
   );
@@ -20,7 +20,7 @@ function SectionTitle({ children }: PropsWithChildren) {
 
 function OrderedList({ items }: { items: string[] }) {
   return (
-    <ol className="text-muted-foreground ml-6 list-decimal text-sm leading-relaxed">
+    <ol className="text-muted-foreground ml-6 list-decimal text-base leading-relaxed">
       {items.map((item, index) => (
         <li key={index} className="pl-1">
           {item}
@@ -50,10 +50,10 @@ export function Content({ insight }: ContentProps) {
   const status = statusStyles[insight.feasibility.status] ?? null;
 
   return (
-    <div className="lg:scrollbar-thin lg:max-h-93 lg:overflow-y-auto lg:pr-2 lg:[scrollbar-color:var(--border)_transparent]">
+    <div className="lg:scrollbar-thin lg:max-h-100 lg:overflow-y-auto lg:pr-2 lg:[scrollbar-color:var(--border)_transparent]">
       <section className="flex flex-col gap-2">
         <div className="flex flex-col items-start gap-2 sm:flex-row">
-          <span className="text-foreground text-sm font-semibold">Viabilidade da Meta</span>
+          <span className="text-foreground text-base font-semibold">Viabilidade da Meta</span>
           {status && (
             <span
               className={`w-fit rounded-full px-2.5 py-0.5 text-xs font-semibold ${status.className}`}
