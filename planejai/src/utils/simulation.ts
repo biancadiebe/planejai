@@ -1,0 +1,16 @@
+import type { SimulationFormData } from "../data/simulation";
+import { parseCurrency } from "./currency";
+
+export function calcMonthlySavings(data: SimulationFormData) {
+  return parseCurrency(data.income) - parseCurrency(data.expenses) - parseCurrency(data.debts);
+}
+
+export function calcMonthlySavingsNeeded(data: SimulationFormData) {
+  const deadline = Number.parseInt(data.goalDeadline, 10);
+
+  if (!Number.isFinite(deadline) || deadline <= 0) {
+    return 0;
+  }
+
+  return parseCurrency(data.goalAmount) / deadline;
+}
