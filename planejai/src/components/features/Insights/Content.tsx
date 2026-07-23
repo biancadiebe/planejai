@@ -7,7 +7,7 @@ interface ContentProps {
 }
 
 function Paragraph({ children }: PropsWithChildren) {
-  return <p className="text-muted-foreground text-base leading-relaxed">{children}</p>;
+  return <p className="text-foreground text-base leading-relaxed">{children}</p>;
 }
 
 function SectionTitle({ children }: PropsWithChildren) {
@@ -20,7 +20,7 @@ function SectionTitle({ children }: PropsWithChildren) {
 
 function OrderedList({ items }: { items: string[] }) {
   return (
-    <ol className="text-muted-foreground ml-6 list-decimal text-base leading-relaxed">
+    <ol className="text-foreground ml-6 list-decimal text-base leading-relaxed">
       {items.map((item, index) => (
         <li key={index} className="pl-1">
           {item}

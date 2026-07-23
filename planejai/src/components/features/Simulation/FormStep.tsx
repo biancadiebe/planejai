@@ -2,7 +2,7 @@ import { Button } from "@/components/shared/Button";
 import { Input, type InputProps } from "@/components/shared/input";
 import { formatCurrencyMask } from "@/utils/currency";
 import { ArrowLeft, ArrowRight, type LucideIcon } from "lucide-react";
-import { useState, type ChangeEvent, type SyntheticEvent } from "react";
+import { useEffect, useState, type ChangeEvent, type SyntheticEvent } from "react";
 
 export interface FormStepProps {
   id?: string;
@@ -14,6 +14,8 @@ export interface FormStepProps {
     label: string;
     emojiIcon?: string;
   };
+  initialValue?: string;
+  submitButtonLabelOverride?: string;
 }
 
 interface ActionsButtonsProps {
@@ -28,13 +30,19 @@ export function FormStep({
   question,
   inputProps,
   submitButtonProps,
+  initialValue = "",
+  submitButtonLabelOverride,
   onBack,
   onNext,
   hideBackButton,
 }: FormStepProps & ActionsButtonsProps) {
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState(initialValue);
   const isCurrencyInput = inputProps.prefix === "R$";
   const isNumericInput = inputProps.type === "number";
+
+  useEffect(() => {
+    setInputValue(initialValue);
+  }, [initialValue]);
 
   function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -64,7 +72,7 @@ export function FormStep({
   return (
     <>
       <div className="bg-card rounded-2x1 shadow-[4px_4px_18px_0px_rgba(0,0,0,0.2)] sm:p-8">
-        <div className="bg-primary mb-4 flex h-15 w-15 items-center justify-center rounded-4xl">
+        <div className="bg-primary h-15 w-15 rounded-4xl mb-4 flex items-center justify-center">
           <Icon size={32} className="text-primary-foreground" />
         </div>
         <h2 className="text-primary mb-1 text-xs font-semibold uppercase tracking-widest">
@@ -94,7 +102,7 @@ export function FormStep({
               className="order-1 flex-1 sm:order-2"
               disabled={!inputValue}
             >
-              {submitButtonProps?.label ?? "Próximo"}
+              {submitButtonLabelOverride ?? submitButtonProps?.label ?? "Próximo"}
               {submitButtonProps?.emojiIcon ?? <ArrowRight size={16} />}
             </Button>
           </div>

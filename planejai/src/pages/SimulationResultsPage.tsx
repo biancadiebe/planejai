@@ -4,27 +4,41 @@ import {
   Goal,
   Landmark,
   MessageCircle,
+  Pencil,
   PiggyBank,
   Wallet,
 } from "lucide-react";
-import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useMemo, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { Card } from "@/components/features/SimulationResults/Card";
+import { ProgressCard } from "@/components/features/SimulationResults/ProgressCard";
+import { UpdateSavedAmountModal } from "@/components/features/SimulationResults/UpdateSavedAmountModal";
 import { AIInsightCard } from "@/components/features/AIInsightCardProps";
 import { AIInsightChat } from "@/components/features/AIInsightChat";
 import { Modal } from "@/components/shared/Modal";
 import { Button } from "@/components/shared/Button";
 import { PageHero } from "@/components/shared/PageHero";
+import type { SimulationRecord } from "@/data/simulation";
 import { useSimulationStorage } from "@/hooks/useSimulationStorage";
 import { calcMonthlySavingsNeeded } from "@/utils/simulation";
 
 export function SimulationResultsPage() {
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isUpdateSavedAmountOpen, setIsUpdateSavedAmountOpen] = useState(false);
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { getFormData, getLatestFormData } = useSimulationStorage();
 
-  const data = id ? getFormData(id) : getLatestFormData();
+  const [simulationData, setSimulationData] = useState<SimulationRecord | null>(() => {
+    if (id) {
+      return getFormData(id);
+    }
+
+    return getLatestFormData();
+  });
+
+  const data = useMemo(() => simulationData, [simulationData]);
 
   if (!data) {
     return <p>Simulação não encontrada.</p>;
@@ -41,14 +55,24 @@ export function SimulationResultsPage() {
             subtitle="Com base no seu perfil financeiro e objetivos."
           />
         </div>
-        <Button
-          variant="secondary"
-          className="w-full lg:w-auto bg-primary font-semibold text-base mb-13"
-          onClick={() => setIsChatOpen(true)}
-          icon={MessageCircle}
-        >
-          Conversar com a IA
-        </Button>
+        <div className="flex w-full flex-col gap-3 lg:w-auto lg:flex-row">
+          <Button
+            variant="secondary"
+            className="bg-primary w-full text-base font-semibold lg:w-auto"
+            onClick={() => navigate(`/simulacao/${data.id}/editar`)}
+            icon={Pencil}
+          >
+            Editar simulação
+          </Button>
+          <Button
+            variant="secondary"
+            className="bg-primary w-full text-base font-semibold lg:w-auto"
+            onClick={() => setIsChatOpen(true)}
+            icon={MessageCircle}
+          >
+            Conversar com a IA
+          </Button>
+        </div>
       </div>
       <div className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
         <Card icon={Goal} label="Custo da Meta" value={data.goalAmount} subtitle={data.goalName} />
@@ -64,6 +88,13 @@ export function SimulationResultsPage() {
           label="Economia mensal"
           value={`R$ ${monthlySavingsNeeded.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
           subtitle={"Economia mensal necessária"}
+        />
+      </div>
+      <div className="mb-6">
+        <ProgressCard
+          savedAmount={data.savedAmount ?? "0"}
+          goalAmount={data.goalAmount}
+          onUpdateClick={() => setIsUpdateSavedAmountOpen(true)}
         />
       </div>
       <div className="grid gap-6 lg:grid-cols-3 ">
@@ -94,11 +125,7 @@ export function SimulationResultsPage() {
           />
         </div>
       </div>
-      <Modal
-        open={isChatOpen}
-        title="Converse com o educador financeiro"
-        onClose={() => setIsChatOpen(false)}
-      >
+      <Modal open={isChatOpen} title="Converse com a IA" onClose={() => setIsChatOpen(false)}>
         {data ? (
           <AIInsightChat simulationId={data.id} />
         ) : (
@@ -107,6 +134,24 @@ export function SimulationResultsPage() {
           </div>
         )}
       </Modal>
+      <UpdateSavedAmountModal
+        id={data.id}
+        currentValue={data.savedAmount ?? "0"}
+        open={isUpdateSavedAmountOpen}
+        onClose={() => setIsUpdateSavedAmountOpen(false)}
+        onUpdated={(value) => {
+          setSimulationData((currentData) => {
+            if (!currentData) {
+              return currentData;
+            }
+
+            return {
+              ...currentData,
+              savedAmount: value,
+            } as SimulationRecord;
+          });
+        }}
+      />
     </main>
   );
 }

@@ -59,5 +59,6 @@ export function buildAIPrompt(simulation: SimulationRecord) {
     - Para o campo "feasibility.status", use os seguintes critérios:
       - "viable": saldo após reserva para a meta é maior ou igual a 0
       - "needs_adjustment": saldo negativo de até 20% do valor da economia mensal necessária
-      - "unfeasible": saldo negativo superior a 20% do valor da economia mensal necessária`;
+      - "unfeasible": saldo negativo superior a 20% do valor da economia mensal necessária
+    - Não use negrito, buga no chat`;
 }

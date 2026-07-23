@@ -3,6 +3,7 @@ import { RootLayout } from "./components/layout/RootLayout";
 import { SimulationFormPage } from "./pages/SimulationFormPage";
 import { SimulationResultsPage } from "./pages/SimulationResultsPage";
 import SimulationHistoryPage from "./pages/SimulationHistoryPage";
+import { SimulationEditPage } from "./pages/SimulationEditPage";
 
 //caminhos
 export const router = createBrowserRouter([
@@ -25,8 +26,12 @@ export const router = createBrowserRouter([
         element: <SimulationResultsPage />,
       },
       {
+        path: "/simulacao/:id/editar",
+        element: <SimulationEditPage />,
+      },
+      {
         path: "/historico",
-        element: <SimulationHistoryPage/>,
+        element: <SimulationHistoryPage />,
       },
     ],
   },

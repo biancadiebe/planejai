@@ -82,4 +82,5 @@ export type SimulationRecord = SimulationFormData & {
   id: string;
   createdAt: string;
   insight?: InsightData;
+  savedAmount?: string;
 };
